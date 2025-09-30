@@ -1,25 +1,29 @@
 name: Sync to Hugging Face Hub
-on:
-	push:
-		branches: [main]
 
-	workflow_dispatch:
-	
+on:
+  push:
+    branches: [main]
+
+  workflow_dispatch:
+
 jobs:
-	sync-to-hub:
-		runs-on: ubuntu-latest
-		steps:
-			-	uses: actions/checkout@v2
-				with:
-					fetch-depth: 0
-			-	name: Add remote
-				env:
-					HF: ${{ secrets.HF }}
-				run: git remote add space https://huggingface.co/spaces/Temka04/demo
-			- name: Push to hub
-				env:
-					HF: ${{ secrets.HF }}
-				run: git push force https://huggingface.co/spaces/Temka04/demo main
+  sync-to-hub:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Add Hugging Face remote
+        env:
+          HG: ${{ secrets.HG }}
+        run: |
+          git remote add space https://user:$HG@huggingface.co/spaces/Temka04/demo
+          git fetch space
+
+      - name: Push to Hugging Face
+        run: git push -f space main
 
 
 
